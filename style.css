@@ -17,21 +17,36 @@ body {
 }
 
 #product1 {
-  position: fixed;
+  position: absolute;
   margin-top: 150px;
   width: 300px;
 }
 
 #product2 {
- position: fixed;
+ position: absolute;
  margin-top: 150px;
  width: 300px;
  margin-left: 320px;
 }
 
 #product3 {
- position: fixed; 
+ position: absolute; 
  margin-top: 150px;
  width: 300px;
  margin-left: 640px;
+}
+
+#productsPicked {
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+}
+
+ul {
+  margin-top: 480px;
+  margin-left: 10px;
+}
+
+#productChart {
+  margin-top: 160px;
 }

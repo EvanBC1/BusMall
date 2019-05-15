@@ -5,8 +5,14 @@ var product1 = document.getElementById('product1');
 var product2 = document.getElementById('product2');
 var product3 = document.getElementById('product3');
 var products = document.getElementById('products');
+var productTable = document.getElementById('productTable');
+document.getElementById('productsPicked').innerHTML = '0 of 25 products picked';
+
 var productArray = [];
 var productImageArray = [product1, product2, product3];
+var totalProductsPicked = 0;
+var pickedProductsChart;
+var chartDrawn = true;
 
 // Constructor
 function ProductImages (name) {
@@ -16,7 +22,6 @@ function ProductImages (name) {
   this.timesShown = 0;
   productArray.push(this);
 }
-
 
 // Instances
 new ProductImages('bag.jpg');
@@ -43,7 +48,7 @@ new ProductImages('wine-glass.jpg');
 // Show 3 random products
 function showImages() {
   var uniqueRandomNumber = [];
-  while(uniqueRandomNumber.length < 3){
+  while(uniqueRandomNumber.length < 6){
     var r = Math.floor(Math.random() * productArray.length);
     if(uniqueRandomNumber.indexOf(r) === -1) uniqueRandomNumber.push(r);
   }
@@ -54,10 +59,7 @@ function showImages() {
     productArray[uniqueRandomNumber[i]].timesShown++;
   }
 }
-
-
-
-
+// Need a function
 
 // Event handler
 function handleProductClick(event){
@@ -71,7 +73,29 @@ function handleProductClick(event){
       arrayElement++;
     }
   }
-  showImages();
+  // Tracking total products picked
+  totalProductsPicked++;
+  if (totalProductsPicked > 24) {
+    document.getElementById('productsPicked').innerHTML = '25 of 25 products picked';
+    products.removeEventListener('click', handleProductClick);
+    renderResults();
+  } else {
+    console.log(totalProductsPicked);
+    document.getElementById('productsPicked').innerHTML = `${totalProductsPicked} of 25 products picked`;
+    showImages();
+  }
+}
+
+// When I reach 25 votes I need a function to show the vote
+function renderResults(){
+  var ulEL = document.createElement('ul');
+  productTable.appendChild(ulEL);
+
+  for (var i = 0; i < productArray.length; i++) {
+    var liEl = document.createElement('li');
+    liEl.textContent = `${productArray[i].timesPicked} - vote(s) for ${productArray[i].name}`;
+    ulEL.appendChild(liEl);
+  }
 }
 
 //Event Listener
@@ -80,5 +104,40 @@ products.addEventListener('click', handleProductClick);
 // Show first 3 images
 showImages();
 
-// generate 3 unique random numbers
+// ++++++++++++++++++++++++++++++++++++++++++++
+// CHART STUFF
+// Charts rendered using Chart JS v.2.8.0
+// http://www.chartjs.org/
+// ++++++++++++++++++++++++++++++++++++++++++++
 
+var data = {
+  labels: name,
+  datasets: [{
+    data: ProductImages.timesPicked,
+  }]
+};
+drawChart();
+function drawChart() {
+  var ctx = document.getElementById('productChart').getContext('2d');
+  pickedProductsChart = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {
+      responsive: false,
+      animation: {
+        duration: 2000,
+        easing: 'easeOutBounce'
+      }
+    },
+    savles: {
+      yAxes: [{
+        ticks: {
+          max:10,
+          min: 0,
+          stepSize: 1.0
+        }
+      }]
+    }
+  });
+  chartDrawn = true;
+}
