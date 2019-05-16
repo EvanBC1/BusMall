@@ -17,9 +17,12 @@ body {
 }
 
 #product1 {
+  float: left;
   position: absolute;
   margin-top: 150px;
   width: 300px;
+  border: 2px solid red;
+  display: block;
 }
 
 #product2 {
@@ -50,3 +53,10 @@ ul {
 #productChart {
   margin-top: 160px;
 }
+
+.products {
+  border: 2px solid red;
+  height: 100px;
+  width: 500px;
+}
+

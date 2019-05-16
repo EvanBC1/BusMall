@@ -5,14 +5,14 @@ var product1 = document.getElementById('product1');
 var product2 = document.getElementById('product2');
 var product3 = document.getElementById('product3');
 var products = document.getElementById('products');
-var productTable = document.getElementById('productTable');
 document.getElementById('productsPicked').innerHTML = '0 of 25 products picked';
 
 var productArray = [];
 var productImageArray = [product1, product2, product3];
 var totalProductsPicked = 0;
-var pickedProductsChart;
-var chartDrawn = true;
+
+var votes = [];
+var title = [];
 
 // Constructor
 function ProductImages (name) {
@@ -75,10 +75,12 @@ function handleProductClick(event){
   }
   // Tracking total products picked
   totalProductsPicked++;
+  updateChartArrays();
+
   if (totalProductsPicked > 24) {
     document.getElementById('productsPicked').innerHTML = '25 of 25 products picked';
     products.removeEventListener('click', handleProductClick);
-    renderResults();
+    drawChart();
   } else {
     console.log(totalProductsPicked);
     document.getElementById('productsPicked').innerHTML = `${totalProductsPicked} of 25 products picked`;
@@ -87,16 +89,8 @@ function handleProductClick(event){
 }
 
 // When I reach 25 votes I need a function to show the vote
-function renderResults(){
-  var ulEL = document.createElement('ul');
-  productTable.appendChild(ulEL);
 
-  for (var i = 0; i < productArray.length; i++) {
-    var liEl = document.createElement('li');
-    liEl.textContent = `${productArray[i].timesPicked} - vote(s) for ${productArray[i].name}`;
-    ulEL.appendChild(liEl);
-  }
-}
+
 
 //Event Listener
 products.addEventListener('click', handleProductClick);
@@ -110,34 +104,67 @@ showImages();
 // http://www.chartjs.org/
 // ++++++++++++++++++++++++++++++++++++++++++++
 
-var data = {
-  labels: name,
-  datasets: [{
-    data: ProductImages.timesPicked,
-  }]
-};
-drawChart();
-function drawChart() {
+function drawChart () {
   var ctx = document.getElementById('productChart').getContext('2d');
-  pickedProductsChart = new Chart(ctx, {
+  var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(250,174,50,1)');
+  gradient.addColorStop(1, 'rgba(250,174,50,0)');
+  var pickedProductsChart = new Chart(ctx, {
+
+    // The type of chart we want to create
     type: 'bar',
-    data: data,
-    options: {
-      responsive: false,
-      animation: {
-        duration: 2000,
-        easing: 'easeOutBounce'
-      }
-    },
-    savles: {
-      yAxes: [{
-        ticks: {
-          max:10,
-          min: 0,
-          stepSize: 1.0
-        }
+
+    // The data for our dataset
+    data: {
+      labels: title,
+      datasets: [{
+        fillColor : gradient, // Put the gradient here as a fill color
+        strokeColor : '#ff6c23',
+        pointColor : '#fff',
+        pointStrokeColor : '#ff6c23',
+        pointHighlightFill: '#fff',
+        pointHighlightStroke: '#ff6c23',
+        label: 'Products Picked',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: votes
       }]
-    }
+    },
+
+    // Configuration options go here
+    options: {}
   });
-  chartDrawn = true;
 }
+
+function updateChartArrays() {
+  for (var i = 0; i < productArray.length; i++) {
+    title[i] = productArray[i].name;
+    votes[i] = productArray[i].timesPicked;
+  }
+}
+// drawChart();
+// updateChartArrays();
+
+// ++++++++++++++++++++++++++++++++++++++++++++
+// Test Code
+// ++++++++++++++++++++++++++++++++++++++++++++
+// function test() {
+// if(threeRandomnumbers.indexof(randomNumber) === -1 && lastThreeNumbers.indexof(randomNumber)=== -1){
+//   threeRandomnumbers.push(randomNumber)
+
+//   var threeRandomnumbers = [];
+//   var lastThreeNumbers = [];
+//   if ( i<0){
+//     lastThreeNumbers = randomNumberArray
+//   }
+// }
+// //Make Color Gradient
+// function makeColors(){
+//   for(var i = 0; i < productArray.length; i++){
+//     var endOfColor = i * .05 .toFixed 2;
+//     var color = `rgba(255, 0, 0, ${endofColor}`;
+
+//   }
+// }
+
+// }
